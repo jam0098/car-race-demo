@@ -1,0 +1,59 @@
+
+:root{
+    --delay: 0s;
+}
+
+#contenedor{
+    background-color: blueviolet;
+    height: 700px;
+    width: 90%;
+    margin: 0% auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    border-radius: 5px;
+    border: 1px solid;
+}
+
+.coche{
+    width: 150px;
+    height: 80px;
+    position: relative;
+}
+
+#header{
+    text-align: center;
+    justify-content: center;
+    padding-bottom: 10px;
+}
+
+.animacion{
+    animation: movimiento var(--delay);
+    animation-fill-mode: forwards;
+}
+
+.reset{
+    display: none;
+}
+
+ol {
+    background-color: blueviolet;
+    padding: 0;
+    list-style-position: inside;
+    width: 100px;
+    display: inline-block;
+    border-radius: 5px;
+    border: 1px solid;
+    display: none;
+  }
+
+@keyframes movimiento {
+    from {
+        margin-left: 0%;
+      }
+    
+      to {
+        margin-left: 90%;
+      }
+  }
+       

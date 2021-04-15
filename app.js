@@ -1,80 +1,102 @@
-const button = document.querySelector('button')
 const selectCoches = document.querySelector('#numCoches')
 const container = document.querySelector('#contenedor')
-const reset = document.querySelector('#reset')
+const button = document.querySelector('button')
 const tabla = document.querySelector('#scores')
-const tabladiv = document.querySelector('.tabla')
+const reset = document.querySelector('#reset')
 
-const imagenesCoches = [
-    { nombre: 'Coche 1', img: 'img/car1.png', delay: '' },
-    { nombre: 'Coche 2', img: 'img/car2.png', delay: '' },
-    { nombre: 'Coche 3', img: 'img/car3.png', delay: '' },
-    { nombre: 'Coche 4', img: 'img/car4.png', delay: '' },
-    { nombre: 'Coche 5', img: 'img/car5.png', delay: '' },
-    { nombre: 'Coche 6', img: 'img/car6.png', delay: '' },
-    { nombre: 'Coche 7', img: 'img/car7.png', delay: '' },
-    { nombre: 'Coche 8', img: 'img/car8.png', delay: '' },
-    { nombre: 'Coche 9', img: 'img/car9.png', delay: '' },
-]
+class Coche {
+    constructor(name, delay, img){
+        this.name = 'Coche ' + name
+        this.delay = delay
+        this.img = 'img/'+ img + '.png'
+    } 
+}
 
-let randomNum = () => Math.floor(Math.random() * (20 - 2)) + 2;
-let numCoches = 0
+class Circuito {
+    constructor() {
+      this.coches = []
+    }
+
+    addCoche(cocheObj) {
+        this.coches.push(cocheObj)
+    }
+
+    removeCoches(){
+        this.coches = []
+    }
+
+    displayCoches(){
+        while (container.firstChild) {
+            container.removeChild(container.firstChild)
+          }
+
+        this.coches.forEach(coche => { 
+            const div = document.createElement("div");
+            const img = document.createElement("img");
+            div.classList.add('coche')
+            img.classList.add('coche')
+            img.src = coche.img
+            div.appendChild(img)
+            container.appendChild(div)
+        })
+    }
+
+    runCoches(c){
+        this.coches.forEach((coche, i)=> { 
+            c[i].style.setProperty('--delay', coche.delay + 's')
+            c[i].classList.add('animacion')
+        })
+    }
+
+    printScores(){
+        while (tabla.firstChild) {
+            tabla.removeChild(tabla.firstChild)
+          }
+
+       let ranking = demo.coches.sort((a, b) => a.delay - b.delay)
+       let maxDelay = ranking[ranking.length -1].delay
+
+       setTimeout(function () {
+        for (const rank of ranking) {
+            let position = document.createElement("li")
+            position.append(rank.name)
+            tabla.appendChild(position)
+            tabla.style.display = "inline-block"
+       }
+    }, maxDelay * 1000)
+       
+    }
+}
+
+const demo = new Circuito()
+let randomNum = () => Math.floor(Math.random() * 15) + 1;
 
 selectCoches.addEventListener('change', function () {
-    numCoches = parseInt(selectCoches.value)
-    let cochesJugando = [...imagenesCoches.slice(0, numCoches)]
-    button.style.display = "inline-block";
+    demo.removeCoches()
+    let num = parseInt(selectCoches.value)
 
-    for (i = 0; i < numCoches; i++) {
-        const newDiv = document.createElement("div");
-        const img = document.createElement("img");
-        img.src = cochesJugando[i].img
-        img.classList.add('coche')
-        newDiv.classList.add('coche')
-        newDiv.appendChild(img)
-        container.appendChild(newDiv)
-        let delay = randomNum();
-        newDiv.style.setProperty('--delay', delay + 's')
-        cochesJugando[i].delay = delay;
+    for (i = 1; i <= num; i++) {
+        demo.addCoche(new Coche(i, randomNum(), i))
     }
-    const coches = document.querySelectorAll('#contenedor div')
-
-    button.addEventListener('click', function () {
-        let ganadores = [...cochesJugando.sort((a, b) => a.delay - b.delay)]
-        let maxDelay = ganadores[ganadores.length - 1].delay;
-
-        for (coche of coches) {
-            coche.classList.add('animacion')
-        }
-
-        setTimeout(function () {
-            for (posicion of ganadores) {
-                let asd = document.createElement("li")
-                asd.append(posicion.nombre)
-                tabla.appendChild(asd)
-                tabla.style.display = "inline-block"
-            }
-        }, maxDelay * 1000)
-
-        button.style.display = "none";
-        reset.style.display = "inline-block";
-    })
-    selectCoches.style.display = "none";
-
-    reset.addEventListener('click', function (e) {
-        while (cochesJugando.length > 0) {
-            cochesJugando.pop();
-        }
-        tabla.innerHTML = ''
-        container.innerHTML = ''
-        selectCoches.selectedIndex = 0
-        reset.style.display = "none";
-        selectCoches.style.display = "inline-block";
-    })
+    demo.displayCoches()
 })
 
+button.addEventListener('click', function () {
+    const coches = document.querySelectorAll('#contenedor div')
+    demo.runCoches(coches)
+    demo.printScores()
+    selectCoches.style.display = "none";
+    button.style.display = "none";
+    reset.style.display = "inline-block"
+})
 
-
-
-
+reset.addEventListener('click', function () {
+    tabla.innerHTML = ''
+    container.innerHTML = ''
+    selectCoches.selectedIndex = 0
+    selectCoches.style.display = "inline-block";
+    button.style.display = "inline-block";
+    tabla.style.display="none"
+    reset.style.display = "none"
+})
 
